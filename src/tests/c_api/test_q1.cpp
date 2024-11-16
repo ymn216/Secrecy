@@ -215,6 +215,9 @@ int main(int argc, char** argv) {
   elapsed = seconds + micro*1e-6;
 
   if (rank == 0) {
+    for (int i = 0; i < ROWS1; i++) {
+        printf("result[%d][0] = %lld, result[%d][1] = %lld\n", i, result[i][0], i, result[i][1]);
+    }
     assert(result[5][0]==8);
     assert(result[5][1]==3);
     assert(result[6][0]==10);

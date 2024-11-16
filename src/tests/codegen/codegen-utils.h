@@ -11,6 +11,9 @@ static void createDBandQuery(int argc, char *argv[], const std::string &db_name,
     // Parse arguments
     std::string query_file, schema_file;
     int rel_no = argc-3;
+    // std::cout << "argc = " << argc << std::endl;
+    // std::cout << "argv[0] = " << argv[0] << std::endl;
+    // std::cout << "rel_no = " << rel_no << std::endl;
     int rows[rel_no];
     parseArguments(argc, argv, query_file, schema_file, rows, rel_no);
     // Parse database schema

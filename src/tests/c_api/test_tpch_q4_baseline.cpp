@@ -78,12 +78,29 @@ int main(int argc, char** argv) {
       }
     }
 
+    //print c1
+    // for (int i = 0; i < ROWS_O; ++i) {
+    //     for (int j = 0; j < COLS_O; ++j) {
+    //         std::cout << c1[i][j] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
+    // std::cout << "c1 end\n";
+
     Data ** c2 = allocate_2D_data_table(ROWS_L, COLS_L);
     for (int i=0;i<ROWS_L;i++){
       for(int j=0;j<COLS_L;j++){
         c2[i][j] = lineitem[i][j];
       }
     }
+     
+     //print c2
+    // for (int i = 0; i < ROWS_L; ++i) {
+    //     for (int j = 0; j < COLS_L; ++j) {
+    //         std::cout << c2[i][j] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
 
     Table r_orders = {-1, ROWS_O, COLS_O, c1};
     Table r_lineitem = {-1, ROWS_L, COLS_L, c2};

@@ -66,6 +66,7 @@ static void create_schema(std::string filename, int* rows, int rel_no,
     std::string line, rel, cols;
     std::vector<std::string> tokens, sTypes;
     std::vector<bool> b_sharing;
+    //std::cout << "rel_no = " << rel_no << std::endl;
     int i = 0;
     while( getline(infile, line) ) {
         auto trimmed = trim(line, space);
@@ -96,5 +97,6 @@ static void create_schema(std::string filename, int* rows, int rel_no,
             tokens.clear();
         }
     }
+    //std::cout << "i = " << i << std::endl;
     assert(i == rel_no); // Make sure the number of relations equals the number of cardinalities
 }
