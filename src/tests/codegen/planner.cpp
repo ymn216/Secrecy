@@ -53,6 +53,9 @@ void executeQuery(int argc, char *argv[]){
     exchange_rsz_seeds();
     printElapsedTime("交换种子", start);
 
+    // Print the query content
+    query->printPlan();
+
     // Call execution on the root operator
     start = getCurrentTime();
     leaderLogging("[INFO] Executing the plan\n");
@@ -68,6 +71,7 @@ void executeQuery(int argc, char *argv[]){
         schema[i]->freeRelation();
     }
 }
+
 
 
 int main(int argc, char *argv[]) {

@@ -111,13 +111,27 @@ int main(int argc, char** argv) {
   //exchange seeds
   exchange_rsz_seeds(succ, pred);
 
-  struct timeval begin, end;
+  FILE *file;
+  if(rank==0){
+     file= fopen("/root/Secrecy/benchmark_result/q1.txt", "a");
+     if (file == NULL) {
+      perror("Error opening file");
+      MPI_Finalize();
+      return -1;
+    }
+  }
+
+  if (rank == 0) { 
+    fprintf(file, "\tQ1\t%d\t%d\n", ROWS1, ROWS2);
+  }
+
+  struct timeval begin, end,part_begin,part_end;
   long seconds, micro;
   double elapsed;
 
   // start timer
   gettimeofday(&begin, 0);
-
+  gettimeofday(&part_begin, 0);
   // STEP 1: SORT t1 on diag (att=2)
   #if DEBUG
     if (rank==0) {
@@ -128,6 +142,15 @@ int main(int argc, char** argv) {
   bool asc[1] = {1};
   bitonic_sort_batch(&t1, att_index, 1, asc, ROWS1/2);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step1:Sorting time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 2: IN
   #if DEBUG
     if (rank==0) {
@@ -138,6 +161,15 @@ int main(int argc, char** argv) {
   assert(in_res!=NULL);
   in(&t1, &t2, 0, 0, in_res, ROWS1);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step2:IN time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 3: GROUP-BY-COUNT on diag (att=2)
   #if DEBUG
     if (rank==0) {
@@ -160,6 +192,15 @@ int main(int argc, char** argv) {
   // reuse ra, rb arrays for exchange of arithmetic counts
   exchange_a_shares_array(in_res_a, ra, ROWS1);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step3:Group-by time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 4: sort group's output on count
   // reuse rb, in_res for result of conversion to binary
   #if DEBUG
@@ -178,6 +219,15 @@ int main(int argc, char** argv) {
   }
   free(rb); free(in_res);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step4:Sort on count: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 5: Sort by cnt
   #if DEBUG
     if (rank==0) {
@@ -196,6 +246,13 @@ int main(int argc, char** argv) {
     result[i][1] = open_b(t1.content[i][4]); // count
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step5:Sort by cnt: %f\n", elapsed);
+  }
   // stop timer
   gettimeofday(&end, 0);
   seconds = end.tv_sec - begin.tv_sec;
@@ -203,7 +260,7 @@ int main(int argc, char** argv) {
   elapsed = seconds + micro*1e-6;
 
   if (rank == 0) {
-    printf("\tQ1\t%d\t%d\t%.3f\n", ROWS1, ROWS2, elapsed);
+    fprintf(file,"\tQ1\t%d\t%d\t%.3f\n", ROWS1, ROWS2, elapsed);
   }
 
   #if DEBUG

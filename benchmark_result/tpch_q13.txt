@@ -1,0 +1,48 @@
+	TPCH-Q13	1024	1024	1024
+step1:Sorting time1: 0.063388
+step2:Selection order: 0.000046
+step3:Fused group-by-cnt-join time: 5.957676
+step4:Sorting time2: 0.062472
+step5:GROUP-BY-COUNT: 0.082122
+step6:Final ORDER-BY: 0.268680
+	TPCH-Q13	1024	1024	1024	6.434
+	TPCH-Q13	2048	2048	2048
+step1:Sorting time1: 0.150182
+step2:Selection order: 0.000072
+step3:Fused group-by-cnt-join time: 23.138093
+step4:Sorting time2: 0.153117
+step5:GROUP-BY-COUNT: 0.177017
+step6:Final ORDER-BY: 0.643878
+	TPCH-Q13	2048	2048	2048	24.262
+	TPCH-Q13	4096	4096	4096
+step1:Sorting time1: 0.352320
+step2:Selection order: 0.000125
+step3:Fused group-by-cnt-join time: 91.440416
+step4:Sorting time2: 0.344720
+step5:GROUP-BY-COUNT: 0.377869
+step6:Final ORDER-BY: 1.502392
+	TPCH-Q13	4096	4096	4096	94.018
+	TPCH-Q13	8192	8192	8192
+step1:Sorting time1: 0.814636
+step2:Selection order: 0.000319
+step3:Fused group-by-cnt-join time: 377.122819
+step4:Sorting time2: 0.800925
+step5:GROUP-BY-COUNT: 0.805882
+step6:Final ORDER-BY: 3.495588
+	TPCH-Q13	8192	8192	8192	383.040
+	TPCH-Q13	16384	16384	8192
+step1:Sorting time1: 1.881820
+step2:Selection order: 0.000692
+step3:Fused group-by-cnt-join time: 1457.812257
+step4:Sorting time2: 1.847849
+step5:GROUP-BY-COUNT: 1.725588
+step6:Final ORDER-BY: 8.075846
+	TPCH-Q13	16384	16384	8192	1471.344
+	TPCH-Q13	32768	32768	4096
+step1:Sorting time1: 4.384068
+step2:Selection order: 0.001869
+step3:Fused group-by-cnt-join time: 6972.793544
+step4:Sorting time2: 4.290252
+step5:GROUP-BY-COUNT: 3.657061
+step6:Final ORDER-BY: 18.149505
+	TPCH-Q13	32768	32768	4096	7003.276

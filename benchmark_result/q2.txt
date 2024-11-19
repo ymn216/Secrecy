@@ -1,0 +1,42 @@
+	Q2	1024
+step1:Order by : 0.294797
+step2:Apply selection1: 0.000015
+step3:Apply selection2: 0.009162
+step4:Sort on s_i: 0.286035
+step5:Scan and mask: 0.005715
+	Q2	1024	0.596
+	Q2	2048
+step1:Order by : 0.663973
+step2:Apply selection1: 0.000029
+step3:Apply selection2: 0.018126
+step4:Sort on s_i: 0.665569
+step5:Scan and mask: 0.011381
+	Q2	2048	1.359
+	Q2	4096
+step1:Order by : 1.606847
+step2:Apply selection1: 0.000094
+step3:Apply selection2: 0.036506
+step4:Sort on s_i: 1.598700
+step5:Scan and mask: 0.023003
+	Q2	4096	3.265
+	Q2	8192
+step1:Order by : 3.646184
+step2:Apply selection1: 0.000120
+step3:Apply selection2: 0.072566
+step4:Sort on s_i: 3.638904
+step5:Scan and mask: 0.045460
+	Q2	8192	7.403
+	Q2	16384
+step1:Order by : 8.605736
+step2:Apply selection1: 0.000267
+step3:Apply selection2: 0.148133
+step4:Sort on s_i: 8.584361
+step5:Scan and mask: 0.094136
+	Q2	16384	17.433
+	Q2	32768
+step1:Order by : 19.195801
+step2:Apply selection1: 0.000556
+step3:Apply selection2: 0.295625
+step4:Sort on s_i: 19.185338
+step5:Scan and mask: 0.187545
+	Q2	32768	38.865

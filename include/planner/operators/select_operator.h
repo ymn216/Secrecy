@@ -19,6 +19,7 @@ class SelectOperator : public Operator {
         std::shared_ptr<Expression> left = filterExpr->expressions[0]; // left subexpression
         std::shared_ptr<Expression> right = filterExpr->expressions[1]; // right subexpression
 
+        std::cout << "filter expression " <<  filterExpr->expressionType<< std::endl;
         // Get selection predicate type
         switch (filterExpr->expressionType) {
             case Expression::Equal: {

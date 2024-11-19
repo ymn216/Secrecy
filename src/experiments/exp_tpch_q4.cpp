@@ -95,14 +95,31 @@ int main(int argc, char** argv) {
 
   //exchange seeds
   exchange_rsz_seeds(succ, pred);
+  
 
-  struct timeval begin, end;
+  FILE *file;
+  if(rank==0){
+     file= fopen("/root/Secrecy/benchmark_result/tpch_q4.txt", "a");
+     if (file == NULL) {
+      perror("Error opening file");
+      MPI_Finalize();
+      return -1;
+    }
+  }
+
+  
+
+  if (rank == 0) { 
+    fprintf(file, "\tTPCH-Q4\t%d\t%d\t%d\n", ROWS_O, ROWS_L,BATCH_SIZE_);
+  }
+
+  struct timeval begin, end,part_begin,part_end;
   long seconds, micro;
   double elapsed;
 
   // start timer
   gettimeofday(&begin, 0);
-
+  gettimeofday(&part_begin, 0);
   // STEP 1: SORT ORDERS on priority (att=4)
   #if DEBUG
     if (rank==0) {
@@ -112,7 +129,16 @@ int main(int argc, char** argv) {
   unsigned int att_index[1] = {4};
   bool asc[1] = {1};
   bitonic_sort_batch(&t1, att_index, 1, asc, ROWS_O/2);
+  
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step1:Sorting time: %f\n", elapsed);
+  }
 
+  gettimeofday(&part_begin, 0);
   // STEP 2: Selection L_COMMITDATE < L_RECEIPTDATE
   #if DEBUG
     if (rank==0) {
@@ -137,6 +163,15 @@ int main(int argc, char** argv) {
 
   free(sel_l); free(rem_sel_l);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step2:Selection time1: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 3: Fused Selection-IN
   #if DEBUG
     if (rank==0) {
@@ -152,6 +187,15 @@ int main(int argc, char** argv) {
   in_sel_right(&t1, &t2, 0, 0, 6, in_res, BATCH_SIZE_);
   exchange_shares_array(in_res, rem_in_res, ROWS_O);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step3:Fused Selection-IN time: %f\n", elapsed);
+  }
+  
+  gettimeofday(&part_begin, 0);
   // STEP 4: Apply selection O_ORDERDATE >= D1
   #if DEBUG
     if (rank==0) {
@@ -174,6 +218,15 @@ int main(int argc, char** argv) {
     t1.content[i][7] = rem_sel[i];
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step4:Apply selection1: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 5: Apply selection O_ORDERDATE < D2
   #if DEBUG
     if (rank==0) {
@@ -191,6 +244,15 @@ int main(int argc, char** argv) {
     t1.content[i][9] = rem_sel[i];
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step5:selection time2: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 6: Compute AND of selections
   BShare mask = 1;
   #if DEBUG
@@ -225,6 +287,15 @@ int main(int argc, char** argv) {
 
   free(in_res); free(rem_in_res);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step6:AND time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 7: GROUP-BY-COUNT on O_ORDERPRIORITY (att=4)
   #if DEBUG
     if (rank==0) {
@@ -256,6 +327,14 @@ int main(int argc, char** argv) {
   }
   open_b_array(sel_a, ROWS_O, res_prio);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step7:Group-by time: %f\n", elapsed);
+  }
+
   // stop timer
   gettimeofday(&end, 0);
   seconds = end.tv_sec - begin.tv_sec;
@@ -263,7 +342,11 @@ int main(int argc, char** argv) {
   elapsed = seconds + micro*1e-6;
 
   if (rank == 0) {
-    printf("\tTPCH-Q4\t%d\t%d\t%.3f\n", ROWS_O, ROWS_L, elapsed);
+    fprintf(file,"\tTPCH-Q4\t%d\t%d\t%.3f\n", ROWS_O, ROWS_L, elapsed);
+  }
+
+  if(rank==0){
+    fclose(file);
   }
 
   free(t1.content); free(t2.content); free(sel_a); free(res_count); free(res_prio);

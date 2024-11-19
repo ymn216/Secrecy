@@ -116,12 +116,27 @@ int main(int argc, char **argv){
   //exchange seeds
   exchange_rsz_seeds(succ, pred);
 
-  struct timeval begin, end;
+  FILE *file;
+  if(rank==0){
+     file= fopen("/root/Secrecy/benchmark_result/tpch_q6.txt", "a");
+     if (file == NULL) {
+      perror("Error opening file");
+      MPI_Finalize();
+      return -1;
+    }
+  }
+
+  if (rank == 0) { 
+    fprintf(file, "\tTPCH-Q6\t%d\n", ROWS_L);
+  }
+
+  struct timeval begin, end,part_begin,part_end;
   long seconds, micro;
   double elapsed;
 
   // start timer
   gettimeofday(&begin, 0);
+  gettimeofday(&part_begin, 0);
 
 // STEP 1: Check Selection Conditions
 #if DEBUG
@@ -171,6 +186,15 @@ int main(int argc, char **argv){
     ind += 2;
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step1:Check Selection Conditions: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 2: Select rows
   // Needed COLS1:             0:SHIPDATE, 1:QUANTITY, 2:DISCOUNT, 3:EXTENDEDPRICE
   // In addition to :         4:99-SHIPDATE, 5:SHIPDATE-200, 6:QUANTITY-24, 7:DISCOUNT-0.05, 8:0.07-DISCOUNT
@@ -215,6 +239,15 @@ int main(int argc, char **argv){
     tb.content[i][27] = rem_sel[i];
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step2:Select rows: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 3: Change boolean to arth
 #if DEBUG
   if (rank == 0){
@@ -231,6 +264,15 @@ int main(int argc, char **argv){
   assert(res_remote != NULL);
   exchange_shares_array(res, res_remote, ROWS_L);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step3:boolean to arth: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 4: Multiplication
 #if DEBUG
   if (rank == 0){
@@ -260,6 +302,14 @@ int main(int argc, char **argv){
   AShare summation_share = summation;
   open_a(summation_share);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step4:Multiplication: %f\n", elapsed);
+  }
+
   // stop timer
   gettimeofday(&end, 0);
   seconds = end.tv_sec - begin.tv_sec;
@@ -267,7 +317,7 @@ int main(int argc, char **argv){
   elapsed = seconds + micro * 1e-6;
 
   if(rank == 0) {
-    printf("Time: %lf\n", elapsed);
+    fprintf(file,"\tTPCH-Q6\t%d\t%.3f\n",ROWS_L, elapsed);
   }
 
   free(tb.content);

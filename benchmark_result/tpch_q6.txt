@@ -1,0 +1,36 @@
+	TPCH-Q6	1024
+step1:Check Selection Conditions: 0.000096
+step2:Select rows: 0.000442
+step3:boolean to arth: 0.000048
+step4:Multiplication: 0.000204
+	TPCH-Q6	1024	0.001
+	TPCH-Q6	2048
+step1:Check Selection Conditions: 0.000122
+step2:Select rows: 0.000752
+step3:boolean to arth: 0.000065
+step4:Multiplication: 0.000382
+	TPCH-Q6	2048	0.001
+	TPCH-Q6	4096
+step1:Check Selection Conditions: 0.000255
+step2:Select rows: 0.001504
+step3:boolean to arth: 0.000127
+step4:Multiplication: 0.000750
+	TPCH-Q6	4096	0.003
+	TPCH-Q6	8192
+step1:Check Selection Conditions: 0.000590
+step2:Select rows: 0.003151
+step3:boolean to arth: 0.000228
+step4:Multiplication: 0.001501
+	TPCH-Q6	8192	0.005
+	TPCH-Q6	16384
+step1:Check Selection Conditions: 0.001368
+step2:Select rows: 0.007154
+step3:boolean to arth: 0.000560
+step4:Multiplication: 0.003380
+	TPCH-Q6	16384	0.012
+	TPCH-Q6	32768
+step1:Check Selection Conditions: 0.002942
+step2:Select rows: 0.012302
+step3:boolean to arth: 0.001022
+step4:Multiplication: 0.005810
+	TPCH-Q6	32768	0.022

@@ -1,0 +1,63 @@
+	TPCH-Q4	1024	1024	1024
+step1:Sorting time: 0.070757
+step2:Selection time1: 0.000011
+step3:Fused Selection-IN time: 5.989123
+step4:Apply selection1: 0.000041
+step5:selection time2: 0.000011
+step6:AND time: 0.000187
+step7:Group-by time: 0.065499
+	TPCH-Q4	1024	1024	6.126
+	TPCH-Q4	1024	1024	1024
+step1:Sorting time: 0.071544
+step2:Selection time1: 0.000012
+step3:Fused Selection-IN time: 5.972004
+step4:Apply selection1: 0.000039
+step5:selection time2: 0.000011
+step6:AND time: 0.000187
+step7:Group-by time: 0.066863
+	TPCH-Q4	1024	1024	6.111
+	TPCH-Q4	2048	2048	2048
+step1:Sorting time: 0.168929
+step2:Selection time1: 0.000035
+step3:Fused Selection-IN time: 23.913141
+step4:Apply selection1: 0.000076
+step5:selection time2: 0.000017
+step6:AND time: 0.000364
+step7:Group-by time: 0.142198
+	TPCH-Q4	2048	2048	24.225
+	TPCH-Q4	4096	4096	4096
+step1:Sorting time: 0.401695
+step2:Selection time1: 0.000080
+step3:Fused Selection-IN time: 92.676361
+step4:Apply selection1: 0.000146
+step5:selection time2: 0.000029
+step6:AND time: 0.000738
+step7:Group-by time: 0.308515
+	TPCH-Q4	4096	4096	93.388
+	TPCH-Q4	8192	8192	8192
+step1:Sorting time: 0.931411
+step2:Selection time1: 0.000241
+step3:Fused Selection-IN time: 369.316281
+step4:Apply selection1: 0.000303
+step5:selection time2: 0.000056
+step6:AND time: 0.001438
+step7:Group-by time: 0.679631
+	TPCH-Q4	8192	8192	370.929
+	TPCH-Q4	16384	16384	16384
+step1:Sorting time: 2.160503
+step2:Selection time1: 0.000544
+step3:Fused Selection-IN time: 1540.602119
+step4:Apply selection1: 0.000675
+step5:selection time2: 0.000189
+step6:AND time: 0.002958
+step7:Group-by time: 1.490001
+	TPCH-Q4	16384	16384	1544.257
+	TPCH-Q4	32768	32768	4096
+step1:Sorting time: 4.969953
+step2:Selection time1: 0.001240
+step3:Fused Selection-IN time: 6172.325043
+step4:Apply selection1: 0.001301
+step5:selection time2: 0.000354
+step6:AND time: 0.005909
+step7:Group-by time: 3.201608
+	TPCH-Q4	32768	32768	6180.505

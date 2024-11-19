@@ -63,6 +63,7 @@ typedef struct {
     Data **content;
 } Table;
 
+
 /**
  * PartyMessage represents a data message exchanges between data owners.
 **/

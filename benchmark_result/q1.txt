@@ -1,0 +1,35 @@
+	Q1	1024	1024
+step1:Sorting time: 0.068866
+step2:IN time: 6.223193
+step3:Group-by time: 0.063736
+step4:Sort on count: 0.018975
+step5:Sort by cnt: 0.065436
+	Q1	1024	1024	6.440
+	Q1	2048	2048
+step1:Sorting time: 0.157823
+step2:IN time: 23.508683
+step3:Group-by time: 0.144410
+step4:Sort on count: 0.048616
+step5:Sort by cnt: 0.155553
+	Q1	2048	2048	24.015
+	Q1	4096	4096
+step1:Sorting time: 0.366851
+step2:IN time: 95.664787
+step3:Group-by time: 0.362841
+step4:Sort on count: 0.077363
+step5:Sort by cnt: 0.380868
+	Q1	4096	4096	96.853
+	Q1	8192	8192
+step1:Sorting time: 0.846460
+step2:IN time: 363.535588
+step3:Group-by time: 0.644029
+step4:Sort on count: 0.145849
+step5:Sort by cnt: 0.833571
+	Q1	8192	8192	366.006
+	Q1	16384	16384
+step1:Sorting time: 1.952378
+step2:IN time: 1461.352428
+step3:Group-by time: 1.947619
+step4:Sort on count: 0.291646
+step5:Sort by cnt: 1.934485
+	Q1	16384	16384	1467.479

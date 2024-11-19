@@ -1,0 +1,36 @@
+	Q3	1024	1024	64
+step1:Sorting time: 0.000064
+step2:Sort relations: 0.975201
+step3:Distinct: 0.011255
+step4:Join and count: 7.949051
+6	Q3-BATCH	1024	1024	64	8.936
+	Q3	2048	2048	128
+step1:Sorting time: 0.000113
+step2:Sort relations: 2.292530
+step3:Distinct: 0.022538
+step4:Join and count: 30.607007
+6	Q3-BATCH	2048	2048	128	32.922
+	Q3	4096	4096	256
+step1:Sorting time: 0.000212
+step2:Sort relations: 5.492174
+step3:Distinct: 0.045613
+step4:Join and count: 123.912114
+6	Q3-BATCH	4096	4096	256	129.450
+	Q3	8192	8192	512
+step1:Sorting time: 0.000442
+step2:Sort relations: 13.214885
+step3:Distinct: 0.087318
+step4:Join and count: 505.030451
+6	Q3-BATCH	8192	8192	512	518.333
+	Q3	16384	16384	1024
+step1:Sorting time: 0.000941
+step2:Sort relations: 29.158075
+step3:Distinct: 0.180280
+step4:Join and count: 2021.786364
+6	Q3-BATCH	16384	16384	1024	2051.126
+	Q3	32768	32768	2048
+step1:Sorting time: 0.001858
+step2:Sort relations: 68.827878
+step3:Distinct: 0.349012
+step4:Join and count: 7934.213512
+6	Q3-BATCH	32768	32768	2048	8003.392

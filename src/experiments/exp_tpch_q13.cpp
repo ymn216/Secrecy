@@ -95,12 +95,27 @@ int main(int argc, char** argv) {
   //exchange seeds
   exchange_rsz_seeds(succ, pred);
 
-  struct timeval begin, end;
+    FILE *file;
+  if(rank==0){
+     file= fopen("/root/Secrecy/benchmark_result/tpch_q13.txt", "a");
+     if (file == NULL) {
+      perror("Error opening file");
+      MPI_Finalize();
+      return -1;
+    }
+  }
+
+  if (rank == 0) { 
+    fprintf(file, "\tTPCH-Q13\t%d\t%d\t%d\n", ROWS_C, ROWS_O,BATCH_SIZE_);
+  }
+
+  struct timeval begin, end,part_begin,part_end;
   long seconds, micro;
   double elapsed;
 
   // start timer
   gettimeofday(&begin, 0);
+  gettimeofday(&part_begin, 0);
 
   // STEP 1: SORT CUSTOMER on C_CUSTOMERKEY (0)
   #if DEBUG
@@ -112,6 +127,15 @@ int main(int argc, char** argv) {
   bool asc[1] = {1};
   bitonic_sort_batch(&t1, att_index, 1, asc, ROWS_C/2);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step1:Sorting time1: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 2: SELECTION ON ORDERS
   #if DEBUG
     if (rank==0) {
@@ -149,6 +173,15 @@ int main(int argc, char** argv) {
 
   free(sel_a); free(rem_sel_a);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step2:Selection order: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 3: Fused group-by-cnt-join
   #if DEBUG
     if (rank==0) {
@@ -198,6 +231,15 @@ int main(int argc, char** argv) {
 
   free(c_counts); free(c_remote_counts); free(c_counts_b); free(c_remote_counts_b);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step3:Fused group-by-cnt-join time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0); 
   // STEP 4: SORT ON C_COUNT (t1.2)
   #if DEBUG
     if (rank==0) {
@@ -207,6 +249,15 @@ int main(int argc, char** argv) {
   att_index[0] = 2;
   bitonic_sort_batch(&t1, att_index, 1, asc, ROWS_C/2);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step4:Sorting time2: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 5: GROUP-BY-COUNT on C_COUNT (t1.2)
   #if DEBUG
     if (rank==0) {
@@ -245,6 +296,15 @@ int main(int argc, char** argv) {
     t1.content[i][5] = remote_counters_b[i];
   }
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step5:GROUP-BY-COUNT: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 6: FINAL ORDER-BY custdist desc, c_count desc
   #if DEBUG
     if (rank==0) {
@@ -264,6 +324,14 @@ int main(int argc, char** argv) {
   }
   open_b_array(s_result, 2*ROWS_C, result);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step6:Final ORDER-BY: %f\n", elapsed);
+  }
+
   // stop timer
   gettimeofday(&end, 0);
   seconds = end.tv_sec - begin.tv_sec;
@@ -271,7 +339,7 @@ int main(int argc, char** argv) {
   elapsed = seconds + micro*1e-6;
 
   if (rank == 0) {
-    printf("\tTPCH-Q13\t%d\t%d\t%d\t%.3f\n", ROWS_C, ROWS_O, BATCH_SIZE_, elapsed);
+    fprintf(file,"\tTPCH-Q13\t%d\t%d\t%d\t%.3f\n", ROWS_C, ROWS_O, BATCH_SIZE_, elapsed);
   }
 
   free(t1.content); free(t2.content); free(result); free(s_result);

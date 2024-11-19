@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
   //exchange seeds
   exchange_rsz_seeds(succ, pred);
 
-  struct timeval begin, end;
+  struct timeval begin, end,part_begin,part_end;
   long seconds, micro;
   double elapsed;
 
@@ -106,8 +106,22 @@ int main(int argc, char** argv) {
     rb[i] = 0;
   }
 
+    FILE *file;
+  if(rank==0){
+     file= fopen("/root/Secrecy/benchmark_result/q3.txt", "a");
+     if (file == NULL) {
+      perror("Error opening file");
+      MPI_Finalize();
+      return -1;
+    }
+  }
+  if (rank == 0) { 
+    fprintf(file, "\tQ3\t%d\t%d\t%d\n", ROWS1, ROWS2,batch_size);
+  }
+
   // Start timer
   gettimeofday(&begin, 0);
+  gettimeofday(&part_begin, 0);
 
   // STEP 1: Apply selections
   #if DEBUG
@@ -145,6 +159,16 @@ int main(int argc, char** argv) {
   }
   free(sel1); free(sel2); free(rem_sel1); free(rem_sel2);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step1:Sorting time: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
+
   // STEP 2: Sort relations
   #if DEBUG
     if (rank==0) {
@@ -158,6 +182,16 @@ int main(int argc, char** argv) {
   // Sort on s_i, pid, time (DESC)
   bool asc2[3] = {true,true,false};
   bitonic_sort_batch(&t2, sort_att3, 3, asc2, t2.numRows/2);
+
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step2:Sort relations: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
 
   // STEP 3: Apply DISTINCT pid to each relation
   #if DEBUG
@@ -181,6 +215,15 @@ int main(int argc, char** argv) {
   exchange_bit_shares_array(d1, rem_d1, t1.numRows);
   exchange_bit_shares_array(d2, rem_d2, t2.numRows);
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step3:Distinct: %f\n", elapsed);
+  }
+
+  gettimeofday(&part_begin, 0);
   // STEP 4: Do the theta-join and, for each pair (i,j), evaluate the predicate
   #if DEBUG
     if (rank==0) {
@@ -344,6 +387,14 @@ int main(int argc, char** argv) {
   }
   #endif
 
+  gettimeofday(&part_end, 0);
+  seconds = part_end.tv_sec - part_begin.tv_sec;
+  micro = part_end.tv_usec - part_begin.tv_usec;
+  elapsed = seconds + micro*1e-6;
+  if (rank == 0) {
+    fprintf(file,"step4:Join and count: %f\n", elapsed);
+  }
+
   // stop timer
   gettimeofday(&end, 0);
   seconds = end.tv_sec - begin.tv_sec;
@@ -351,7 +402,7 @@ int main(int argc, char** argv) {
   elapsed = seconds + micro*1e-6;
 
   if (rank == 0) {
-    printf("%d\tQ3-BATCH\t%d\t%d\t%d\t%.3f\n",
+    fprintf(file,"%d\tQ3-BATCH\t%d\t%d\t%d\t%.3f\n",
             COLS, ROWS1, ROWS2, batch_size, elapsed);
   }
 
